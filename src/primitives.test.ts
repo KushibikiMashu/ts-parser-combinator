@@ -1,4 +1,4 @@
-import {anyChar, eof} from './primitives'
+import {anyChar, char, eof} from './primitives'
 
 describe('anyChar', function () {
   const parser = anyChar
@@ -53,6 +53,44 @@ describe('eof', function () {
     })
   })
 });
+
+describe('char', function () {
+  const parser = char('a')
+
+  test('入力が空のとき、パースに失敗する', () => {
+    const input = [] as const
+    const output = parser(input)
+    expect(output).toEqual({
+      result: 'fail'
+    })
+  })
+
+  test('a を与えたとき、パースに成功して a を返す', () => {
+    const input = [...'a']
+    const output = parser(input)
+    expect(output).toEqual({
+      result: 'success',
+      data: 'a',
+      rest: []
+    })
+  })
+
+  test('A を与えたとき、パースに失敗する', () => {
+    const input = [...'A']
+    const output = parser(input)
+    expect(output).toEqual({
+      result: 'fail'
+    })
+  })
+
+  test('hoge を与えたとき、パースに失敗する', () => {
+    const input = [...'hoge']
+    const output = parser(input)
+    expect(output).toEqual({
+      result: 'fail'
+    })
+  })
+})
 
 // test('', () => {
 //
