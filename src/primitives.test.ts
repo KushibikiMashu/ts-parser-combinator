@@ -1,4 +1,4 @@
-import {anyChar, char, eof} from './primitives'
+import {anyChar, char, eof, is} from './primitives'
 
 describe('anyChar', function () {
   const parser = anyChar
@@ -91,6 +91,78 @@ describe('char', function () {
     })
   })
 })
+
+describe('is', function () {
+  describe('判定対象が a のみ', function () {
+    const parser = is((c): c is 'a' => c === 'a')
+
+    test('入力が空のとき、パースに失敗する', () => {
+      const input = [] as const
+      const output = parser(input)
+      expect(output).toEqual({
+        result: 'fail'
+      })
+    })
+
+    test('a を与えたとき、パースに成功して a を返す', () => {
+      const input = [...'a']
+      const output = parser(input)
+      expect(output).toEqual({
+        result: 'success',
+        data: 'a',
+        rest: []
+      })
+    })
+
+    test('A を与えたとき、パースに失敗する', () => {
+      const input = [...'A']
+      const output = parser(input)
+      expect(output).toEqual({
+        result: 'fail'
+      })
+    })
+  });
+
+  describe('判定対象が "0" または "1"のとき', function () {
+    const parser = is((c): c is '0' | '1' => c === '0' || c === '1')
+
+    test('入力が空のとき、パースに失敗する', () => {
+      const input = [] as const
+      const output = parser(input)
+      expect(output).toEqual({
+        result: 'fail'
+      })
+    })
+
+    test('0 を与えたとき、パースに成功して 0 を返す', () => {
+      const input = [...'0']
+      const output = parser(input)
+      expect(output).toEqual({
+        result: 'success',
+        data: '0',
+        rest: []
+      })
+    })
+
+    test('1 を与えたとき、パースに成功して 1 を返す', () => {
+      const input = [...'1']
+      const output = parser(input)
+      expect(output).toEqual({
+        result: 'success',
+        data: '1',
+        rest: []
+      })
+    })
+
+    test('A を与えたとき、パースに失敗する', () => {
+      const input = [...'A']
+      const output = parser(input)
+      expect(output).toEqual({
+        result: 'fail'
+      })
+    })
+  });
+});
 
 // test('', () => {
 //
