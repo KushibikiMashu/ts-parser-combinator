@@ -1,5 +1,6 @@
-import {alpha, lowerAlpha, map, str, upperAlpha} from "./util";
+import {alpha, lowerAlpha, map, opt, str, upperAlpha} from "./util";
 import {digit} from "./char";
+import {char} from "./primitives";
 
 describe('upperAlpha', function () {
   const parser = upperAlpha;
@@ -142,6 +143,52 @@ describe('str', function () {
         result: 'success',
         data: 'true',
         rest: [],
+      })
+    })
+  });
+});
+
+describe('opt', function () {
+  describe('opt(char("a"))', function () {
+    const parser = opt(char('a'))
+
+    test('入力が空のとき、パースに成功して status: "none" を返す', () => {
+      const input = [] as const
+      const output = parser(input)
+      expect(output).toEqual({
+        result: 'success',
+        data: {status: 'none'},
+        rest: [],
+      })
+    })
+
+    test('a を与えたとき、パースに成功して Option<"a"> を返す', () => {
+      const input = [...'a']
+      const output = parser(input)
+      expect(output).toEqual({
+        result: 'success',
+        data: {status: 'some', value: 'a'},
+        rest: [],
+      })
+    })
+
+    test('aa を与えたとき、パースに成功して Option<"aa"> を返す', () => {
+      const input = [...'aa']
+      const output = parser(input)
+      expect(output).toEqual({
+        result: 'success',
+        data: {status: 'some', value: 'a'},
+        rest: [...'a'],
+      })
+    })
+
+    test('b を与えたとき、パースに成功して status: "none" を返す', () => {
+      const input = [...'b']
+      const output = parser(input)
+      expect(output).toEqual({
+        result: 'success',
+        data: {status: 'none'},
+        rest: [...'b'],
       })
     })
   });

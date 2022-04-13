@@ -1,6 +1,6 @@
 import {Parser} from "./types";
 import {char, is} from "./primitives";
-import {cat} from "./combinators";
+import {cat, rep} from "./combinators";
 
 export type UpperAlphabet = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' | 'W' | 'X' | 'Y' | 'Z';
 export type LowerAlphabet = Lowercase<UpperAlphabet>
@@ -31,6 +31,26 @@ export const str: StrFunc = (s) => (input) => {
   return {
     result: 'success',
     data: s,
+    rest: r.rest,
+  }
+}
+
+interface Some<T> {
+  status: 'some';
+  value: T;
+}
+interface None {
+  status: 'none';
+}
+export type Option<T> = Some<T> | None;
+
+type OptFunc = <T>(p: Parser<T>) => Parser<Option<T>>;
+export const opt: OptFunc = (p) => (input) => {
+  const r = rep(p, 0, 1)(input)
+  if (r.result === 'fail') return r
+  return {
+    result: 'success',
+    data: r.data.length === 0 ? {status: 'none'} : {status: 'some', value: r.data[0]},
     rest: r.rest,
   }
 }
