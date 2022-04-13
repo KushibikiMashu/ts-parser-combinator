@@ -1,5 +1,5 @@
 import {char} from "./primitives";
-import {cat, not, or} from "./combinators";
+import {cat, not, or, rep} from "./combinators";
 
 describe('not', function () {
   describe('not(char("a"))', function () {
@@ -166,6 +166,136 @@ describe('cat', function () {
       const output = parser(input)
       expect(output).toEqual({
         result: 'fail',
+      })
+    })
+  });
+});
+
+describe('rep', function () {
+  describe('rep(char("a"))', function () {
+    const parser = rep(char("a"))
+
+    test('入力が空のとき、パースに成功する', () => {
+      const input = [] as const
+      const output = parser(input)
+      expect(output).toEqual({
+        result: 'success',
+        data: [],
+        rest: [],
+      })
+    })
+
+    test('a を与えたとき、パースに成功して ["a"] を返す', () => {
+      const input = [...'a'] as const
+      const output = parser(input)
+      expect(output).toEqual({
+        result: 'success',
+        data: ['a'],
+        rest: [],
+      })
+    })
+
+    test('aa を与えたとき、パースに成功して ["a", "a"] を返す', () => {
+      const input = [...'aa'] as const
+      const output = parser(input)
+      expect(output).toEqual({
+        result: 'success',
+        data: ['a', 'a'],
+        rest: [],
+      })
+    })
+
+    test('aab を与えたとき、パースに成功して ["a", "a"] を返す', () => {
+      const input = [...'aab'] as const
+      const output = parser(input)
+      expect(output).toEqual({
+        result: 'success',
+        data: ['a', 'a'],
+        rest: [...'b'],
+      })
+    })
+  });
+
+  describe('rep(char("a"), 1)', function () {
+    const parser = rep(char("a"), 1)
+
+    test('入力が空のとき、パースに失敗する', () => {
+      const input = [] as const
+      const output = parser(input)
+      expect(output).toEqual({
+        result: 'fail',
+      })
+    })
+
+    test('a を与えたとき、パースに成功して ["a"] を返す', () => {
+      const input = [...'a']
+      const output = parser(input)
+      expect(output).toEqual({
+        result: 'success',
+        data: ['a'],
+        rest: [],
+      })
+    })
+
+    test('aa を与えたとき、パースに成功して ["a", "a"] を返す', () => {
+      const input = [...'aa']
+      const output = parser(input)
+      expect(output).toEqual({
+        result: 'success',
+        data: ['a', 'a'],
+        rest: [],
+      })
+    })
+
+    test('aab を与えたとき、パースに成功して ["a", "a"] を返す', () => {
+      const input = [...'aab']
+      const output = parser(input)
+      expect(output).toEqual({
+        result: 'success',
+        data: ['a', 'a'],
+        rest: [...'b'],
+      })
+    })
+  });
+
+  describe('rep(char("a"), 1, 2)', function () {
+    const parser = rep(char("a"), 1, 2)
+
+    test('入力が空のとき、パースに失敗する', () => {
+      const input = [] as const
+      const output = parser(input)
+      expect(output).toEqual({
+        result: 'fail',
+      })
+    })
+
+    test('a を与えたとき、パースに成功して ["a"] を返す', () => {
+      const input = [...'a']
+      const output = parser(input)
+      expect(output).toEqual({
+        result: 'success',
+        data: ['a'],
+        rest: [],
+      })
+    })
+
+    test('aa を与えたとき、パースに成功して ["a", "a"] を返す', () => {
+      const input = [...'aa']
+      const output = parser(input)
+      expect(output).toEqual({
+        result: 'success',
+        data: ['a', 'a'],
+        rest: [],
+      })
+    })
+
+    test('aab を与えたとき、パースに成功して ["a", "a"] を返す', () => {
+      const input = [...'aab']
+      const output = parser(input)
+      expect(output).toEqual({
+        result: 'success',
+        data: ['a', 'a'],
+        rest: [...'b'],
       })
     })
   });
