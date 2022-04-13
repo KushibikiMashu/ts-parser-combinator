@@ -1,4 +1,4 @@
-import {alpha, lowerAlpha, map, opt, str, upperAlpha} from "./util";
+import {alpha, diff, lowerAlpha, map, opt, str, upperAlpha} from "./util";
 import {digit} from "./char";
 import {char} from "./primitives";
 
@@ -189,6 +189,46 @@ describe('opt', function () {
         result: 'success',
         data: {status: 'none'},
         rest: [...'b'],
+      })
+    })
+  });
+});
+
+describe('diff', function () {
+  describe('diff(digit, char("0"))', function () {
+    const parser = diff(digit, char('0'))
+
+    test('入力が空のとき、パースに失敗する', () => {
+      const input = [] as const
+      const output = parser(input)
+      expect(output).toEqual({
+        result: 'fail',
+      })
+    })
+
+    test('a を与えたとき、パースに失敗する', () => {
+      const input = [...'a']
+      const output = parser(input)
+      expect(output).toEqual({
+        result: 'fail',
+      })
+    })
+
+    test('"0" を与えたとき、パースに失敗する', () => {
+      const input = [...'0']
+      const output = parser(input)
+      expect(output).toEqual({
+        result: 'fail',
+      })
+    })
+
+    test('"5" を与えたとき、パースに失敗する', () => {
+      const input = [...'5']
+      const output = parser(input)
+      expect(output).toEqual({
+        result: 'success',
+        data: '5',
+        rest: [],
       })
     })
   });

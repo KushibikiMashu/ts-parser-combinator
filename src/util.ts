@@ -1,6 +1,6 @@
 import {Parser} from "./types";
 import {char, is} from "./primitives";
-import {cat, rep} from "./combinators";
+import {cat, not, rep} from "./combinators";
 
 export type UpperAlphabet = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' | 'W' | 'X' | 'Y' | 'Z';
 export type LowerAlphabet = Lowercase<UpperAlphabet>
@@ -54,3 +54,6 @@ export const opt: OptFunc = (p) => (input) => {
     rest: r.rest,
   }
 }
+
+type DiffFunc = <T, U>(p: Parser<T>, q: Parser<U>) => Parser<T>;
+export const diff: DiffFunc = (p, q) => map(cat([not(q), p]), ([, r]) => r)
