@@ -1,4 +1,4 @@
-import {alpha, diff, lowerAlpha, map, opt, str, upperAlpha} from "./util";
+import {alpha, diff, list, lowerAlpha, map, opt, str, upperAlpha} from "./util";
 import {digit} from "./char";
 import {char} from "./primitives";
 
@@ -222,12 +222,54 @@ describe('diff', function () {
       })
     })
 
-    test('"5" を与えたとき、パースに失敗する', () => {
+    test('"5" を与えたとき、パースに成功して 5 を返す', () => {
       const input = [...'5']
       const output = parser(input)
       expect(output).toEqual({
         result: 'success',
         data: '5',
+        rest: [],
+      })
+    })
+  });
+});
+
+describe('list', function () {
+  describe('list(digit, char(","))', function () {
+    const parser = list(digit, char(','))
+
+    test('入力が空のとき、パースに失敗する', () => {
+      const input = [] as const
+      const output = parser(input)
+      expect(output).toEqual({
+        result: 'fail',
+      })
+    })
+
+    test('a を与えたとき、パースに失敗する', () => {
+      const input = [...'a']
+      const output = parser(input)
+      expect(output).toEqual({
+        result: 'fail',
+      })
+    })
+
+    test('"1" を与えたとき、パースに成功して ["1"] を返す', () => {
+      const input = [...'1']
+      const output = parser(input)
+      expect(output).toEqual({
+        result: 'success',
+        data: ['1'],
+        rest: [],
+      })
+    })
+
+    test('"1,2,3,4,5" を与えたとき、パースに成功して ["1","2","3","4","5"] を返す', () => {
+      const input = [...'1,2,3,4,5']
+      const output = parser(input)
+      expect(output).toEqual({
+        result: 'success',
+        data: ['1', '2', '3', '4', '5'],
         rest: [],
       })
     })

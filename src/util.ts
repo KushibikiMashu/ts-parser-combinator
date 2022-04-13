@@ -57,3 +57,7 @@ export const opt: OptFunc = (p) => (input) => {
 
 type DiffFunc = <T, U>(p: Parser<T>, q: Parser<U>) => Parser<T>;
 export const diff: DiffFunc = (p, q) => map(cat([not(q), p]), ([, r]) => r)
+
+type ListFunc = <T>(p: Parser<T>, delimiter: Parser<unknown>) => Parser<T[]>
+export const list: ListFunc = (p, delimiter) =>
+  map(cat([p, rep(cat([delimiter, p]))]), ([first, rest]) => [first, ...rest.map(([, r]) => r)])
