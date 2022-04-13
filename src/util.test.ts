@@ -1,4 +1,5 @@
-import {alpha, lowerAlpha, upperAlpha} from "./util";
+import {alpha, lowerAlpha, map, upperAlpha} from "./util";
+import {digit} from "./char";
 
 describe('upperAlpha', function () {
   const parser = upperAlpha;
@@ -98,4 +99,27 @@ describe('alpha', function () {
       result: 'fail',
     })
   })
+});
+
+describe('map(digit, s =~> Number.parseInt(s, 10))', function () {
+  const parser = map(digit, s => Number.parseInt(s, 10))
+
+  test('入力が空のとき、パースに失敗する', () => {
+    const input = [] as const
+    const output = parser(input)
+    expect(output).toEqual({
+      result: 'fail',
+    })
+  })
+
+  test('5 を与えたとき、パースに成功して数値 5 を返す', () => {
+    const input = [...'5']
+    const output = parser(input)
+    expect(output).toEqual({
+      result: 'success',
+      data: 5,
+      rest: [],
+    })
+  })
+
 });
