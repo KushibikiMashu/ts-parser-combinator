@@ -39,7 +39,3 @@ describe('bool', function () {
     })
   })
 });
-
-// test('', () => {
-//
-// })
